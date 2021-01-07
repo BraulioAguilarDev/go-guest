@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -36,7 +35,6 @@ func (h *Handler) Create() http.Handler {
 		if err := body.Decode(&input); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
-
 
 		w.Write([]byte("hola"))
 	})
