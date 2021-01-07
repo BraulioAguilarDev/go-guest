@@ -2,13 +2,13 @@ package database
 
 import (
 	"github.com/brauliodev29/go-guest/config"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // Init func
-func Init() (*gorm.DB, error) {
-	db, err := gorm.Open(config.Config.Dialect, config.Config.DatabaseURI)
+func Init() (*sqlx.DB, error) {
+	db, err := sqlx.Open("postgres", config.Config.DatabaseURI)
 	if err != nil {
 		return nil, err
 	}

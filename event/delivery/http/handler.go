@@ -3,20 +3,17 @@ package http
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/brauliodev29/go-guest/event"
-	"github.com/brauliodev29/go-guest/models"
-	"github.com/brauliodev29/go-guest/pkg/entity"
 	res "github.com/brauliodev29/go-guest/pkg/response"
 )
 
 // Event struct
 type Event struct {
-	Name     string    `json:"name"`
-	Location string    `json:"location"`
-	Date     string    `json:"date"`
-	Time     time.Time `json:"time"`
+	Name     string `json:"name"`
+	Location string `json:"location"`
+	Date     string `json:"date"`
+	Time     string `json:"time"`
 }
 
 // Handler func
@@ -42,14 +39,14 @@ func (h *Handler) Create() http.Handler {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		params := &models.Event{
-			ID:       entity.NewID(),
+		p := &Event{
 			Name:     input.Name,
 			Date:     input.Date,
 			Location: input.Location,
+			Time:     input.Time,
 		}
 
-		data, err := h.useCase.CreateEvent(params)
+		data, err := h.useCase.CreateEvent(p.Name, p.Location, p.Date, p.Time)
 		if err != nil {
 			res.BuildError(w, http.StatusBadRequest, err)
 			return

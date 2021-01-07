@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 	eventhttp "github.com/brauliodev29/go-guest/event/delivery/http"
 	eventpost "github.com/brauliodev29/go-guest/event/repository/postgres"
 	eventusecase "github.com/brauliodev29/go-guest/event/usecase"
-	"github.com/brauliodev29/go-guest/models"
 	"github.com/brauliodev29/go-guest/pkg/database"
 )
 
@@ -32,9 +30,6 @@ func NewApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Migration
-	db.AutoMigrate(&models.Event{})
 
 	// Repository instance
 	eventRepo := eventpost.NewEventRepository(db)
@@ -67,7 +62,6 @@ func (a *App) Run(port string) error {
 	}
 
 	if err := a.httpServer.ListenAndServe(); err != nil {
-		fmt.Println(err)
 		return err
 	}
 
