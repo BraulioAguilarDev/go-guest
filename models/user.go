@@ -1,4 +1,4 @@
-package model
+package models
 
 import "github.com/brauliodev29/go-guest/pkg/entity"
 
