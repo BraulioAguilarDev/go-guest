@@ -1,0 +1,3 @@
+Port: "9000"
+Dialect: postgres
+DatabaseURI: host=local port=5432 user=user dbname=db password=secret sslmode=disable
