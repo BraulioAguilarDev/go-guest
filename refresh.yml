@@ -1,0 +1,17 @@
+app_root: .
+ignored_folders:
+- vendor
+- log
+- tmp
+included_extensions:
+- .go
+- .yml
+build_target_path: "./cmd/api"
+build_path: /tmp
+build_flags: []
+build_delay: 200ns
+binary_name: core
+command_flags: []
+command_env: ["golint ."]
+enable_color: true
+log_name: "core"

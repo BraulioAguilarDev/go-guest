@@ -1,0 +1,36 @@
+version: "3.5"
+services:
+  postgres:
+    image: $POSTGRES_IMAGE
+    container_name: $POSTGRES_CONTAINER
+    restart: on-failure
+    ports:
+      - "$POSTGRES_PORT:5432"
+    expose:
+      - "$POSTGRES_PORT"
+    volumes:
+      - event_postgres:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_HOST=${POSTGRES_CONTAINER}
+  api:
+    image: $EVENT_IMAGE
+    container_name: $EVENT_CONTAINER
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "${EVENT_PORT}:${EVENT_PORT}"
+    volumes:
+      - "${EVENT_VOLUME}"
+    depends_on:
+      - postgres
+
+networks:
+  default:
+    name: $NETWORK
+
+volumes:
+  event_postgres:
