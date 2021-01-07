@@ -6,6 +6,9 @@ import (
 	"time"
 
 	"github.com/brauliodev29/go-guest/event"
+	"github.com/brauliodev29/go-guest/models"
+	"github.com/brauliodev29/go-guest/pkg/entity"
+	res "github.com/brauliodev29/go-guest/pkg/response"
 )
 
 // Event struct
@@ -16,16 +19,19 @@ type Event struct {
 	Time     time.Time `json:"time"`
 }
 
+// Handler func
 type Handler struct {
 	useCase event.UseCase
 }
 
+// NewHandler func
 func NewHandler(useCase event.UseCase) *Handler {
 	return &Handler{
 		useCase: useCase,
 	}
 }
 
+// Create func
 func (h *Handler) Create() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -36,6 +42,19 @@ func (h *Handler) Create() http.Handler {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		w.Write([]byte("hola"))
+		params := &models.Event{
+			ID:       entity.NewID(),
+			Name:     input.Name,
+			Date:     input.Date,
+			Location: input.Location,
+		}
+
+		data, err := h.useCase.CreateEvent(params)
+		if err != nil {
+			res.BuildError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		res.BuildJSON(w, http.StatusCreated, data)
 	})
 }
