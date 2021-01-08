@@ -30,3 +30,16 @@ func (e EventUseCase) CreateEvent(name, location, date, time string) (entity.ID,
 
 	return e.eventRepo.CreateEvent(event)
 }
+
+// UpdateEvent func
+func (e EventUseCase) UpdateEvent(name, location, date, time string, id entity.ID) error {
+	event := &models.Event{
+		ID:       id,
+		Name:     name,
+		Location: location,
+		Date:     date,
+		Time:     time,
+	}
+
+	return e.eventRepo.UpdateEvent(event)
+}

@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	"github.com/brauliodev29/go-guest/event"
+	"github.com/brauliodev29/go-guest/pkg/entity"
 	res "github.com/brauliodev29/go-guest/pkg/response"
+	"github.com/gorilla/mux"
 )
 
 // Event struct
@@ -53,5 +55,36 @@ func (h *Handler) Create() http.Handler {
 		}
 
 		res.BuildJSON(w, http.StatusCreated, data)
+	})
+}
+
+// Update func
+func (h *Handler) Update() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		query := mux.Vars(r)
+
+		var input Event
+
+		body := json.NewDecoder(r.Body)
+		if err := body.Decode(&input); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		p := &Event{
+			Name:     input.Name,
+			Date:     input.Date,
+			Location: input.Location,
+			Time:     input.Time,
+		}
+
+		id, _ := entity.StringToID(query["uid"])
+
+		if err := h.useCase.UpdateEvent(p.Name, p.Location, p.Date, p.Time, id); err != nil {
+			res.BuildError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		res.BuildJSON(w, http.StatusOK, "Updated")
 	})
 }

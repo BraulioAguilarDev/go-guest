@@ -7,4 +7,5 @@ import (
 
 type Repository interface {
 	CreateEvent(event *models.Event) (entity.ID, error)
+	UpdateEvent(event *models.Event) error
 }
