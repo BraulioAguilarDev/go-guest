@@ -88,3 +88,35 @@ func (h *Handler) Update() http.Handler {
 		res.BuildJSON(w, http.StatusOK, "Updated")
 	})
 }
+
+// FindAllEvent func
+func (h *Handler) FindAllEvent() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		events, err := h.useCase.FindAllEvent()
+		if err != nil {
+			res.BuildError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		res.BuildJSON(w, http.StatusOK, events)
+	})
+}
+
+// FindOneEvent func
+func (h *Handler) FindOneEvent() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		query := mux.Vars(r)
+
+		id, _ := entity.StringToID(query["uid"])
+
+		event, err := h.useCase.FindOneEvent(id)
+		if err != nil {
+			res.BuildError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		res.BuildJSON(w, http.StatusOK, event)
+	})
+}

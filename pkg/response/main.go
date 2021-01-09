@@ -5,6 +5,11 @@ import (
 	"net/http"
 )
 
+// Redirect func
+func Redirect(w http.ResponseWriter, r *http.Request, location string) {
+	http.Redirect(w, r, location, 301)
+}
+
 func respond(w http.ResponseWriter, code int, src interface{}) {
 	var body []byte
 	var err error
@@ -36,5 +41,5 @@ func BuildJSON(w http.ResponseWriter, code int, src interface{}) {
 
 // BuildError is wrapped Respond when error response
 func BuildError(w http.ResponseWriter, code int, err error) {
-	respond(w, code, err)
+	respond(w, code, err.Error())
 }

@@ -47,3 +47,25 @@ func (r EventRepository) UpdateEvent(event *models.Event) error {
 
 	return nil
 }
+
+// FindAllEvent func
+func (r EventRepository) FindAllEvent() ([]*models.Event, error) {
+
+	events := []*models.Event{}
+	if err := r.db.Select(&events, "SELECT * FROM event ORDER BY date ASC"); err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}
+
+// FindOneEvent func
+func (r EventRepository) FindOneEvent(id entity.ID) (*models.Event, error) {
+	event := models.Event{}
+
+	if err := r.db.Get(&event, "SELECT * FROM event WHERE id=$1 LIMIT 1", id); err != nil {
+		return nil, err
+	}
+
+	return &event, nil
+}

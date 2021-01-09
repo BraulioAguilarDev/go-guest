@@ -27,4 +27,14 @@ func MakeEventHandlers(
 		"/events/{uid}",
 		n.With(negroni.Wrap(h.Update())),
 	).Methods(http.MethodPut, http.MethodOptions).Name("updateEvent")
+
+	api.Handle(
+		"/events",
+		n.With(negroni.Wrap(h.FindAllEvent())),
+	).Methods(http.MethodGet, http.MethodOptions).Name("findAllEvent")
+
+	api.Handle(
+		"/events/{uid}",
+		n.With(negroni.Wrap(h.FindOneEvent())),
+	).Methods(http.MethodGet, http.MethodOptions).Name("findOneEvent")
 }

@@ -43,3 +43,13 @@ func (e EventUseCase) UpdateEvent(name, location, date, time string, id entity.I
 
 	return e.eventRepo.UpdateEvent(event)
 }
+
+// FindAllEvent func
+func (e EventUseCase) FindAllEvent() ([]*models.Event, error) {
+	return e.eventRepo.FindAllEvent()
+}
+
+// FindOneEvent func
+func (e EventUseCase) FindOneEvent(id entity.ID) (*models.Event, error) {
+	return e.eventRepo.FindOneEvent(id)
+}
