@@ -9,9 +9,9 @@ import (
 	"github.com/urfave/negroni"
 
 	"github.com/brauliodev29/go-guest/event"
-	eventhttp "github.com/brauliodev29/go-guest/event/delivery/http"
-	eventpost "github.com/brauliodev29/go-guest/event/repository/postgres"
-	eventusecase "github.com/brauliodev29/go-guest/event/usecase"
+	eventHTTP "github.com/brauliodev29/go-guest/event/delivery/http"
+	eventPostgres "github.com/brauliodev29/go-guest/event/repository/postgres"
+	eventUseCase "github.com/brauliodev29/go-guest/event/usecase"
 	"github.com/brauliodev29/go-guest/pkg/database"
 )
 
@@ -32,11 +32,11 @@ func NewApp() (*App, error) {
 	}
 
 	// Repository instance
-	eventRepo := eventpost.NewEventRepository(db)
+	eventRepo := eventPostgres.NewEventRepository(db)
 
 	app := &App{
 		Router:  mux.NewRouter().StrictSlash(true),
-		eventUC: eventusecase.NewEventUseCase(eventRepo),
+		eventUC: eventUseCase.NewEventUseCase(eventRepo),
 		Negroni: negroni.New(
 			negroni.NewLogger(),
 			negroni.NewRecovery(),
@@ -50,7 +50,7 @@ func NewApp() (*App, error) {
 func (a *App) Run(port string) error {
 
 	// Make handlers
-	eventhttp.MakeEventHandlers(a.Router, *a.Negroni, a.eventUC)
+	eventHTTP.MakeEventHandlers(a.Router, *a.Negroni, a.eventUC)
 
 	http.Handle("/", a.Router)
 
