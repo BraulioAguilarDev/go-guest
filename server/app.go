@@ -13,6 +13,10 @@ import (
 	eventPostgres "github.com/brauliodev29/go-guest/event/repository/postgres"
 	eventUseCase "github.com/brauliodev29/go-guest/event/usecase"
 	"github.com/brauliodev29/go-guest/pkg/database"
+	"github.com/brauliodev29/go-guest/user"
+	userHTTP "github.com/brauliodev29/go-guest/user/delivery/http"
+	userPostgres "github.com/brauliodev29/go-guest/user/repository/postgres"
+	userUseCase "github.com/brauliodev29/go-guest/user/usecase"
 )
 
 // App struct
@@ -22,6 +26,7 @@ type App struct {
 	Router     *mux.Router
 
 	eventUC event.UseCase
+	userUC  user.UseCase
 }
 
 // NewApp func
@@ -33,10 +38,12 @@ func NewApp() (*App, error) {
 
 	// Repository instance
 	eventRepo := eventPostgres.NewEventRepository(db)
+	userRepo := userPostgres.NewUserRepository(db)
 
 	app := &App{
 		Router:  mux.NewRouter().StrictSlash(true),
 		eventUC: eventUseCase.NewEventUseCase(eventRepo),
+		userUC:  userUseCase.NewAuthUseCase(userRepo),
 		Negroni: negroni.New(
 			negroni.NewLogger(),
 			negroni.NewRecovery(),
@@ -51,6 +58,7 @@ func (a *App) Run(port string) error {
 
 	// Make handlers
 	eventHTTP.MakeEventHandlers(a.Router, *a.Negroni, a.eventUC)
+	userHTTP.MakeUserHandlers(a.Router, *a.Negroni, a.userUC)
 
 	http.Handle("/", a.Router)
 
