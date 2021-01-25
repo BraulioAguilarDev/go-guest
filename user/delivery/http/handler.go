@@ -15,6 +15,7 @@ type User struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
+	Password  string `sjon:"password"`
 }
 
 // Handler struct
@@ -44,12 +45,14 @@ func (h *Handler) Create() http.Handler {
 			FirstName: input.FirstName,
 			LastName:  input.LastName,
 			Email:     input.Email,
+			Password:  input.Password,
 		}
 
 		data, err := h.useCase.CreateUser(
 			p.FirstName,
 			p.LastName,
 			p.Email,
+			p.Password,
 		)
 
 		if err != nil {

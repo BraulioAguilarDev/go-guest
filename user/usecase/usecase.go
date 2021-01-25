@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"firebase.google.com/go/auth"
 	"github.com/brauliodev29/go-guest/models"
 	"github.com/brauliodev29/go-guest/pkg/entity"
 	"github.com/brauliodev29/go-guest/user"
@@ -10,30 +12,47 @@ import (
 
 // AuthUseCase struct
 type AuthUseCase struct {
-	userRepo user.Repository
+	userRepo   user.Repository
+	authClient *auth.Client
 }
 
 // NewAuthUseCase func
-func NewAuthUseCase(userCase user.Repository) *AuthUseCase {
+func NewAuthUseCase(
+	userCase user.Repository,
+	client *auth.Client,
+) *AuthUseCase {
 	return &AuthUseCase{
-		userRepo: userCase,
+		userRepo:   userCase,
+		authClient: client,
 	}
 }
 
 // CreateUser func
-func (a AuthUseCase) CreateUser(firstName, lastName, email string) (entity.ID, error) {
-
-	// Add FirebaseSDK
+func (a AuthUseCase) CreateUser(firstName, lastName, email, password string) (entity.ID, error) {
 
 	user := &models.User{
-		ID:           entity.NewID(),
-		FirstName:    firstName,
-		LastName:     lastName,
-		FirebaseUser: "dedefrfrgtghtgt",
-		Email:        email,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
+		ID:        entity.NewID(),
+		FirstName: firstName,
+		LastName:  lastName,
+		Email:     email,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
+
+	// Add FirebaseSDK
+	ctx := context.Background()
+	params := (&auth.UserToCreate{}).
+		DisplayName(user.FirstName).
+		Email(user.Email).
+		Password(password).
+		Disabled(false)
+
+	remoteUser, err := a.authClient.CreateUser(ctx, params)
+	if err != nil {
+		return user.ID, err
+	}
+
+	user.FirebaseUser = remoteUser.UID
 
 	return a.userRepo.CreateUser(user)
 }
