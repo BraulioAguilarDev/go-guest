@@ -1,3 +1,4 @@
 tmp
 .env
 config/config.yml
+*.json

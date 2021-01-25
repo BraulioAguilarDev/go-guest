@@ -9,9 +9,10 @@ var Config Configuration
 
 // Configuration struct
 type Configuration struct {
-	Port        string
-	Dialect     string
-	DatabaseURI string
+	Port         string
+	Dialect      string
+	DatabaseURI  string
+	FirebaseJSON string
 }
 
 // Init func

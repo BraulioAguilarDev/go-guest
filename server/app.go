@@ -8,11 +8,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 
+	"github.com/brauliodev29/go-guest/config"
 	"github.com/brauliodev29/go-guest/event"
 	eventHTTP "github.com/brauliodev29/go-guest/event/delivery/http"
 	eventPostgres "github.com/brauliodev29/go-guest/event/repository/postgres"
 	eventUseCase "github.com/brauliodev29/go-guest/event/usecase"
 	"github.com/brauliodev29/go-guest/pkg/database"
+	firebase "github.com/brauliodev29/go-guest/pkg/firebase"
 	"github.com/brauliodev29/go-guest/user"
 	userHTTP "github.com/brauliodev29/go-guest/user/delivery/http"
 	userPostgres "github.com/brauliodev29/go-guest/user/repository/postgres"
@@ -31,7 +33,14 @@ type App struct {
 
 // NewApp func
 func NewApp() (*App, error) {
+	// Conexion db
 	db, err := database.Init()
+	if err != nil {
+		return nil, err
+	}
+
+	// Firebase config
+	authClient, err := firebase.NewFirebase(config.Config.FirebaseJSON).NewClient()
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +52,7 @@ func NewApp() (*App, error) {
 	app := &App{
 		Router:  mux.NewRouter().StrictSlash(true),
 		eventUC: eventUseCase.NewEventUseCase(eventRepo),
-		userUC:  userUseCase.NewAuthUseCase(userRepo),
+		userUC:  userUseCase.NewAuthUseCase(userRepo, authClient),
 		Negroni: negroni.New(
 			negroni.NewLogger(),
 			negroni.NewRecovery(),
