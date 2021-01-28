@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+// Response struct
+type Response struct {
+	Error interface{} `json:"error,omitempty"`
+	Data  interface{} `json:"data,omitempty"`
+}
+
 // Redirect func
 func Redirect(w http.ResponseWriter, r *http.Request, location string) {
 	http.Redirect(w, r, location, 301)
@@ -36,10 +42,18 @@ func respond(w http.ResponseWriter, code int, src interface{}) {
 
 // BuildJSON is wrapped Respond when success response
 func BuildJSON(w http.ResponseWriter, code int, src interface{}) {
-	respond(w, code, src)
+	data := &Response{
+		Data: src,
+	}
+
+	respond(w, code, data)
 }
 
 // BuildError is wrapped Respond when error response
 func BuildError(w http.ResponseWriter, code int, err error) {
-	respond(w, code, err.Error())
+	data := &Response{
+		Error: err.Error(),
+	}
+
+	respond(w, code, data)
 }
