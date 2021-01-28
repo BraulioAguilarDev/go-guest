@@ -15,6 +15,7 @@ type User struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
+	Phone     string `json:"phone"`
 	Password  string `sjon:"password"`
 }
 
@@ -45,6 +46,7 @@ func (h *Handler) Create() http.Handler {
 			FirstName: input.FirstName,
 			LastName:  input.LastName,
 			Email:     input.Email,
+			Phone:     input.Phone,
 			Password:  input.Password,
 		}
 
@@ -52,6 +54,7 @@ func (h *Handler) Create() http.Handler {
 			p.FirstName,
 			p.LastName,
 			p.Email,
+			p.Phone,
 			p.Password,
 		)
 
@@ -80,11 +83,12 @@ func (h *Handler) Update() http.Handler {
 		p := &User{
 			FirstName: input.FirstName,
 			LastName:  input.LastName,
+			Phone:     input.Phone,
 		}
 
 		id, _ := entity.StringToID(query["uid"])
 
-		if err := h.useCase.UpdateUser(p.FirstName, p.LastName, id); err != nil {
+		if err := h.useCase.UpdateUser(p.FirstName, p.LastName, p.Phone, id); err != nil {
 			res.BuildError(w, http.StatusBadRequest, err)
 			return
 		}

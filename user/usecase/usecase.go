@@ -28,13 +28,14 @@ func NewAuthUseCase(
 }
 
 // CreateUser func
-func (a AuthUseCase) CreateUser(firstName, lastName, email, password string) (entity.ID, error) {
+func (a AuthUseCase) CreateUser(firstName, lastName, email, phone, password string) (entity.ID, error) {
 
 	user := &models.User{
 		ID:        entity.NewID(),
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
+		Phone:     phone,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -58,12 +59,13 @@ func (a AuthUseCase) CreateUser(firstName, lastName, email, password string) (en
 }
 
 // UpdateUser func
-func (a AuthUseCase) UpdateUser(firstName, lastName string, id entity.ID) error {
+func (a AuthUseCase) UpdateUser(firstName, lastName, phone string, id entity.ID) error {
 
 	user := &models.User{
 		ID:        id,
 		FirstName: firstName,
 		LastName:  lastName,
+		Phone:     phone,
 		UpdatedAt: time.Now(),
 	}
 	return a.userRepo.UpdateUser(user)
