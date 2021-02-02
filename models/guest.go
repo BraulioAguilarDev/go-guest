@@ -1,13 +1,13 @@
 package models
 
+import "github.com/brauliodev29/go-guest/pkg/entity"
+
 // Guest struct
 type Guest struct {
-	EventID          string `json:"event_id"`
-	UserID           string `json:"user_id"`
-	Confirm          bool   `json:"confirm"`
-	Old              int    `json:"old"`
-	OldModificated   int    `json:"old_modificated"`
-	Child            int    `json:"child"`
-	ChildModificated int    `json:"child_modificated"`
-	Total            int    `json:"total"`
+	ID       entity.ID `json:"id"`
+	EventID  entity.ID `json:"event_id"`
+	DetailID entity.ID `json:"detail_id"`
+	Email    string    `json:"email"`
+	FullName string    `json:"full_name"`
+	Status   string    `json:"status"`
 }
